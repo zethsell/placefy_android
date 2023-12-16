@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.placefy.app"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.placefy.app"
@@ -33,11 +33,23 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
+    // dependence fragment
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
 
-    implementation("androidx.core:core-ktx:1.9.0")
+    // dependence picasso
+    implementation("com.squareup.picasso:picasso:2.8")
+
+    // dependencies retrofit2
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
