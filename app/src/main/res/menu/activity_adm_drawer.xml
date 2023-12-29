@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_menu_camera"
+        android:title="@string/menu_home" />
+
+
+    <item android:title="Usuários">
+        <menu>
+            <group>
+                <item
+                    android:id="@+id/nav_users"
+                    android:icon="@drawable/ic_users_24"
+                    android:title="@string/menu_users" />
+                <item
+                    android:id="@+id/nav_users_approve"
+                    android:icon="@drawable/ic_users_approve_24"
+                    android:title="@string/menu_users_approve" />
+            </group>
+        </menu>
+    </item>
+    <item
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Demais Items">
+        <menu>
+            <group>
+                <item
+                    android:id="@+id/nav_plans"
+                    android:icon="@drawable/ic_license_24"
+                    android:title="@string/menu_plans" />
+                <item
+                    android:id="@+id/nav_properties"
+                    android:icon="@drawable/ic_home_group"
+                    android:title="@string/menu_properties" />
+            </group>
+        </menu>
+    </item>
+</menu>

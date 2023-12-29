@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Base.Theme.Placefy" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
@@ -8,11 +8,39 @@
         <item name="colorPrimaryVariant">@color/primaryVariant</item>
         <item name="colorSecondary">@color/secondary</item>
 
+
         <!-- Status bar color -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
 
-
+        <!-- Action bar items -->
+        <item name="actionOverflowButtonStyle">@style/ActionOverflowButton</item>
+        <item name="android:listDivider">@android:color/transparent</item>
     </style>
 
+    <style name="FormToolBarTheme">
+        <item name="actionOverflowButtonStyle">@style/ActionOverflowButton</item>
+    </style>
+
+
     <style name="Theme.Placefy" parent="Base.Theme.Placefy" />
+
+    <style name="Theme.Placefy.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.Placefy.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.Placefy.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="ActionOverflowButton" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="tint">@color/primary</item>
+    </style>
+
+    <style name="ToolbarColoredBackArrow" parent="Base.Theme.Placefy">
+        <item name="android:textColorSecondary">@color/primary</item>
+        <item name="colorControlNormal">@color/primary</item>
+        <item name="titleTextColor">@color/primary</item>
+    </style>
+
 </resources>
