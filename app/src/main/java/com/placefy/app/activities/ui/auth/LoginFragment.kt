@@ -15,14 +15,15 @@ import com.placefy.app.activities.AdminActivity
 import com.placefy.app.activities.ui.dialog.SuccessDialog
 import com.placefy.app.api.RetrofitHelper
 import com.placefy.app.api.interfaces.LoginAPI
+import com.placefy.app.database.dao.AuthDAO
 import com.placefy.app.databinding.FragmentLoginBinding
 import com.placefy.app.helpers.InputExtended
+import com.placefy.app.models.Auth
 import com.placefy.app.models.signin.SignInRequest
 import com.placefy.app.models.signin.SignInResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import retrofit2.Response
 
 
@@ -31,7 +32,11 @@ class LoginFragment : Fragment() {
     private var showPass: Boolean = false
 
     private val base by lazy {
-        RetrofitHelper().noAuthApi
+        RetrofitHelper(requireContext()).noAuthApi
+    }
+
+    private val authDAO by lazy {
+        AuthDAO(requireContext())
     }
 
     override fun onCreateView(
@@ -68,6 +73,7 @@ class LoginFragment : Fragment() {
         return binding.root
     }
 
+
     private fun setShowPassEvents(binding: FragmentLoginBinding) {
         binding.imgShowPass.setOnClickListener {
             showPass = !showPass
@@ -98,7 +104,7 @@ class LoginFragment : Fragment() {
     }
 
     private suspend fun signIn(binding: FragmentLoginBinding) {
-        var result: Response<SignInResponse>? = null
+
         val data = SignInRequest(
             binding.email.text.toString(),
             binding.password.text.toString(),
@@ -107,24 +113,27 @@ class LoginFragment : Fragment() {
 
         try {
             val api = base.create(LoginAPI::class.java)
-            result = api.signIn(data)
+            val response: Response<SignInResponse> = api.signIn(data)
+            val result: SignInResponse = response.body() ?: throw Exception("Falha no login")
+
+            authDAO.save(
+                Auth(
+                    1,
+                    result.accessToken,
+                    result.refreshToken,
+                    binding.keepConnected.isChecked
+                )
+            )
+
+            redirect()
+
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.i("signIn", "erro ao recuperar")
+            Log.i("signIn", e.message.toString())
         }
+    }
 
-
-        if (result != null) {
-            if (result.isSuccessful) {
-                val post = result.body()
-                Log.i("endereco:", "$post")
-                withContext(Dispatchers.Main) { }
-                startActivity(Intent(context, AdminActivity::class.java))
-            } else {
-                Log.i("endereco:", "$result")
-            }
-
-
-        }
+    private fun redirect() {
+        startActivity(Intent(context, AdminActivity::class.java))
     }
 }
