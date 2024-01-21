@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(
                 Intent(
                     this,
-                    if (authDAO.show().accessToken.toString() !== "")
+                    if (authDAO.show().accessToken.toString() != "")
                         AdminActivity::class.java else AuthActivity::class.java
                 )
             )
@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun verifyToken() {
-        if (authDAO.show().accessToken.toString() !== "") {
+        if (authDAO.show().accessToken.toString() != "") {
             binding.includeToolbar.btnLogin.setText("ADMIN")
             val button = binding.includeToolbar.btnLogin
             button.setCompoundDrawablesWithIntrinsicBounds(

@@ -14,7 +14,7 @@ class RetrofitHelper(val context: Context) {
     val noAuthApi: Retrofit = Retrofit.Builder()
         .baseUrl("http://10.0.2.2:5556/api/")
         .addConverterFactory(GsonConverterFactory.create())
-        .client(HttpClient.public())
+        .client(HttpClient.public(context))
         .build()
 
     val authApi: Retrofit = Retrofit.Builder()

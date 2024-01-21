@@ -9,13 +9,13 @@ import java.util.concurrent.TimeUnit
 
 class HttpClient() {
     companion object {
-        fun public(): OkHttpClient {
+        fun public(context: Context): OkHttpClient {
             val builder = OkHttpClient.Builder()
             builder
                 .connectTimeout(20, TimeUnit.SECONDS)
                 .readTimeout(20, TimeUnit.SECONDS)
                 .addInterceptor(SupportInterceptor())
-                .addInterceptor(ResponseInterceptor())
+                .addInterceptor(ResponseInterceptor(context))
             return builder.build()
         }
 
@@ -25,7 +25,7 @@ class HttpClient() {
                 .connectTimeout(20, TimeUnit.SECONDS)
                 .readTimeout(20, TimeUnit.SECONDS)
                 .addInterceptor(SupportInterceptor())
-                .addInterceptor(ResponseInterceptor())
+                .addInterceptor(ResponseInterceptor(context))
                 .authenticator(AuthInterceptor(context))
             return builder.build()
         }
