@@ -8,9 +8,19 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "placefy", nu
 
     companion object {
         const val AUTH_TABLE = "auth"
+        const val USER_TABLE = "users"
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
+        generateAuthTable(db)
+        generateUsersTable(db)
+
+    }
+
+    override fun onUpgrade(db: SQLiteDatabase?, p1: Int, p2: Int) {
+    }
+
+    private fun generateAuthTable(db: SQLiteDatabase?) {
         val sql = "CREATE TABLE if NOT EXISTS `auth` (" +
                 "id integer NOT NULL PRIMARY KEY AUTOINCREMENT," +
                 "`accessToken` text," +
@@ -20,9 +30,20 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "placefy", nu
         db?.execSQL(sql)
     }
 
-    override fun onUpgrade(db: SQLiteDatabase?, p1: Int, p2: Int) {
-        TODO("Not yet implemented")
+    private fun generateUsersTable(db: SQLiteDatabase?) {
+        val sql = "CREATE TABLE if NOT EXISTS `users` (" +
+                "`id` integer NOT NULL PRIMARY KEY AUTOINCREMENT," +
+                "`name` varchar," +
+                "`surname` varchar," +
+                "`email` varchar NOT NULL UNIQUE," +
+                "`personDoc` varchar," +
+                "`registration` varchar," +
+                "`creci`  varchar," +
+                "`birthDate` varchar," +
+                "`type` varchar NOT NULL," +
+                "`accessAt` timestamp," +
+                "`lastAccessAt` timestamp," +
+                "`phone` varchar);"
+        db?.execSQL(sql)
     }
-
-
 }

@@ -7,4 +7,5 @@ interface IAuthDAO {
 
     fun show(): Auth
 
+    fun clean()
 }

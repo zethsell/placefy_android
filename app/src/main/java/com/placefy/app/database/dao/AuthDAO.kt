@@ -13,9 +13,9 @@ class AuthDAO(context: Context) : IAuthDAO {
     override fun save(auth: Auth): Boolean {
         val sql =
             "INSERT INTO ${DatabaseHelper.AUTH_TABLE} (id,accessToken,refreshToken, keepConnected) " +
-                    "VALUES (1,'${auth.accessToken}', '${auth.refreshToken}', ${auth.keepConnected}) " +
+                    "VALUES (1,'Bearer ${auth.accessToken}', '${auth.refreshToken}', ${auth.keepConnected}) " +
                     "ON CONFLICT(id) DO UPDATE " +
-                    "SET accessToken='${auth.accessToken}', " +
+                    "SET accessToken='Bearer ${auth.accessToken}', " +
                     "refreshToken = '${auth.refreshToken}'," +
                     "keepConnected = ${auth.keepConnected};"
 
@@ -45,5 +45,10 @@ class AuthDAO(context: Context) : IAuthDAO {
 
         cursor.close()
         return Auth(1)
+    }
+
+    override fun clean() {
+        val sql = "DELETE FROM auth"
+        write.execSQL(sql)
     }
 }

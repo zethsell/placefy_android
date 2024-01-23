@@ -2,7 +2,9 @@ package com.placefy.app.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -12,9 +14,16 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.placefy.app.R
 import com.placefy.app.api.RetrofitHelper
+import com.placefy.app.api.interfaces.UserAPI
 import com.placefy.app.database.dao.AuthDAO
+import com.placefy.app.database.dao.UserDAO
 import com.placefy.app.databinding.ActivityAdminBinding
-import com.placefy.app.models.Auth
+import com.placefy.app.models.user.User
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import retrofit2.Response
 
 
 class AdminActivity : AppCompatActivity() {
@@ -23,11 +32,15 @@ class AdminActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAdminBinding
 
     private val base by lazy {
-        RetrofitHelper(this).noAuthApi
+        RetrofitHelper(this).authApi
     }
 
     private val authDAO by lazy {
         AuthDAO(this)
+    }
+
+    private val userDAO by lazy {
+        UserDAO(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,6 +52,9 @@ class AdminActivity : AppCompatActivity() {
         setSupportActionBar(binding.appBarAdmin.toolbar)
         setFloatButtonEvents(binding)
         setMenuEvents(binding)
+
+
+        loadLoggedUser(binding)
 
         appBarConfiguration = setBar(binding)
 
@@ -84,7 +100,8 @@ class AdminActivity : AppCompatActivity() {
     }
 
     private fun logout() {
-        authDAO.save(Auth(1, "", "", false))
+        authDAO.clean()
+        userDAO.clean()
 
         val intent = Intent(applicationContext, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -92,6 +109,9 @@ class AdminActivity : AppCompatActivity() {
     }
 
     private fun setBar(binding: ActivityAdminBinding): AppBarConfiguration {
+
+        val user = userDAO.me()
+        Log.i("me", user.toString())
         return AppBarConfiguration(
             setOf(
                 R.id.nav_users,
@@ -101,5 +121,29 @@ class AdminActivity : AppCompatActivity() {
                 R.id.nav_properties
             ), binding.drawerLayout
         )
+    }
+
+    private fun loadLoggedUser(binding: ActivityAdminBinding) {
+        CoroutineScope(Dispatchers.IO).launch {
+            var user = userDAO.me()
+
+            if (user == null) {
+                val api = base.create(UserAPI::class.java)
+                val response: Response<User> = api.me()
+                user = response.body()
+            }
+
+            withContext(Dispatchers.Main) {
+                val navHeader = binding.navView.getHeaderView(0)
+                val navName = navHeader.findViewById<TextView>(R.id.navHeaderAdminName)
+                val navEmail = navHeader.findViewById<TextView>(R.id.navHeaderAdminEmail)
+
+                if (user != null) {
+                    navName.setText(user.name)
+                    navEmail.setText(user.email)
+                    userDAO.save(user)
+                }
+            }
+        }
     }
 }
