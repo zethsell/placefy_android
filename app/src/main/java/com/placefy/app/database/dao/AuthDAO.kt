@@ -4,7 +4,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import com.placefy.app.database.DatabaseHelper
 import com.placefy.app.database.contracts.IAuthDAO
-import com.placefy.app.models.Auth
+import com.placefy.app.models.data.Auth
 
 class AuthDAO(context: Context) : IAuthDAO {
 

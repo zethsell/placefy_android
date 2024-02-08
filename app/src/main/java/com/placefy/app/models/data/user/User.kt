@@ -1,4 +1,4 @@
-package com.placefy.app.models.user
+package com.placefy.app.models.data.user
 
 data class User(
     val id: Int?,

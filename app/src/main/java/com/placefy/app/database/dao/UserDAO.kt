@@ -4,7 +4,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import com.placefy.app.database.DatabaseHelper
 import com.placefy.app.database.contracts.IUserDAO
-import com.placefy.app.models.user.User
+import com.placefy.app.models.data.user.User
 
 class UserDAO(context: Context) : IUserDAO {
 

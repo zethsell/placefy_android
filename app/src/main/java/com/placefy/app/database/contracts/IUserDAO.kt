@@ -1,6 +1,6 @@
 package com.placefy.app.database.contracts
 
-import com.placefy.app.models.user.User
+import com.placefy.app.models.data.user.User
 
 interface IUserDAO {
     fun save(user: User): Boolean

@@ -1,6 +1,6 @@
 package com.placefy.app.database.contracts
 
-import com.placefy.app.models.Auth
+import com.placefy.app.models.data.Auth
 
 interface IAuthDAO {
     fun save(auth: Auth): Boolean

@@ -1,4 +1,4 @@
-package com.placefy.app.models
+package com.placefy.app.models.data
 
 data class Auth(
     val id: Int,

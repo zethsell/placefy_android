@@ -18,7 +18,7 @@ import com.placefy.app.api.interfaces.UserAPI
 import com.placefy.app.database.dao.AuthDAO
 import com.placefy.app.database.dao.UserDAO
 import com.placefy.app.databinding.ActivityAdminBinding
-import com.placefy.app.models.user.User
+import com.placefy.app.models.data.user.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -12,15 +12,14 @@ import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.placefy.app.R
 import com.placefy.app.activities.AdminActivity
-import com.placefy.app.activities.ui.dialog.SuccessDialog
 import com.placefy.app.api.RetrofitHelper
-import com.placefy.app.api.interfaces.LoginAPI
+import com.placefy.app.api.interfaces.AuthAPI
 import com.placefy.app.database.dao.AuthDAO
 import com.placefy.app.databinding.FragmentLoginBinding
 import com.placefy.app.helpers.InputExtended
-import com.placefy.app.models.Auth
-import com.placefy.app.models.signin.SignInRequest
-import com.placefy.app.models.signin.SignInResponse
+import com.placefy.app.models.api.auth.signin.SignInRequest
+import com.placefy.app.models.api.auth.signin.SignInResponse
+import com.placefy.app.models.data.Auth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -88,10 +87,8 @@ class LoginFragment : Fragment() {
         binding.btnSignUp.setOnClickListener {
 
             parentFragmentManager.commit {
-                replace<SignUpFragment>(requireActivity().findViewById(R.id.fragmentContainerView))
+                replace<SignUpFragment>(R.id.fragmentContainerView)
             }
-            SuccessDialog().show(parentFragmentManager, "success")
-
         }
     }
 
@@ -112,7 +109,7 @@ class LoginFragment : Fragment() {
         )
 
         try {
-            val api = base.create(LoginAPI::class.java)
+            val api = base.create(AuthAPI::class.java)
             val response: Response<SignInResponse> = api.signIn(data)
             val result: SignInResponse = response.body() ?: throw Exception("Falha no login")
 

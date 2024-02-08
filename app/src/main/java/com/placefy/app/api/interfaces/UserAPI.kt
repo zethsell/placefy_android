@@ -1,6 +1,6 @@
 package com.placefy.app.api.interfaces
 
-import com.placefy.app.models.user.User
+import com.placefy.app.models.data.user.User
 import retrofit2.Response
 import retrofit2.http.GET
 

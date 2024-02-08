@@ -43,4 +43,11 @@
         <item name="titleTextColor">@color/primary</item>
     </style>
 
+    <style name="ProfileDropdown" parent="Base.Theme.Placefy">
+        <item name="android:textColorSecondary">@color/secondary</item>
+        <item name="colorControlNormal">@color/secondary</item>
+        <item name="titleTextColor">@color/secondary</item>
+        <item name="colorPrimary">@color/secondary</item>
+    </style>
+
 </resources>

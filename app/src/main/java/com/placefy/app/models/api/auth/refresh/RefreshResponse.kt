@@ -1,8 +1,8 @@
-package com.placefy.app.models.signin
+package com.placefy.app.models.api.auth.refresh
 
 import com.google.gson.annotations.SerializedName
 
-data class SignInResponse(
+data class RefreshResponse(
     @SerializedName("access_token")
     val accessToken: String,
 
