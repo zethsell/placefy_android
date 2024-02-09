@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import androidx.constraintlayout.widget.Guideline
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
@@ -61,11 +62,16 @@ class SignUpFragment : Fragment() {
                         replace<ParticularFragment>(binding.fragmentContainerView2.id)
                     }
                 }
+                val guideLine: Guideline = requireActivity().findViewById(R.id.guideline);
+                guideLine.setGuidelineBegin(100)
             }
     }
 
     private fun setBtnCancelEvents(binding: FragmentSignUpBinding) {
         binding.btnCancel.setOnClickListener {
+
+            val guideLine: Guideline = requireActivity().findViewById(R.id.guideline);
+            guideLine.setGuidelineBegin(700)
 
             parentFragmentManager.commit {
                 replace<LoginFragment>(R.id.fragmentContainerView)
