@@ -1,60 +1,52 @@
 package com.placefy.app.activities.ui.auth.signUpOptions
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.placefy.app.R
+import androidx.fragment.app.Fragment
+import com.placefy.app.activities.ui.auth.SignUpFragment
+import com.placefy.app.activities.ui.contracts.ISignUpFragment
+import com.placefy.app.databinding.FragmentAgencyBinding
+import com.placefy.app.models.api.auth.signup.SignUpAgencyRequest
+import com.placefy.app.models.data.Address
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [AgencyFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class AgencyFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class AgencyFragment : Fragment(), ISignUpFragment {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var binding: FragmentAgencyBinding
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_agency, container, false)
+    ): View {
+        binding = FragmentAgencyBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment AgencyFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            AgencyFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override suspend fun signup() {
+        val parentFrag: SignUpFragment = parentFragment as SignUpFragment
+        val address = Address(
+            binding.zipcode.text.toString(),
+            binding.addressLine.text.toString(),
+            binding.number.text.toString().toInt(),
+            binding.complement.text.toString(),
+            binding.suburb.text.toString(),
+            binding.city.text.toString(),
+            binding.state.text.toString(),
+        )
+
+        val data = SignUpAgencyRequest(
+            binding.name.text.toString(),
+            binding.surname.text.toString(),
+            binding.email.text.toString(),
+            binding.phone.text.toString(),
+            binding.personDoc.text.toString(),
+            binding.registration.text.toString(),
+            binding.creci.text.toString(),
+            address,
+        )
+        parentFrag.signupAgency(data)
     }
 }
