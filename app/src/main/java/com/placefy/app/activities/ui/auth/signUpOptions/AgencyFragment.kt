@@ -30,7 +30,7 @@ class AgencyFragment : Fragment(), ISignUpFragment {
         val address = Address(
             binding.zipcode.text.toString(),
             binding.addressLine.text.toString(),
-            binding.number.text.toString().toInt(),
+            binding.number.text.toString(),
             binding.complement.text.toString(),
             binding.suburb.text.toString(),
             binding.city.text.toString(),

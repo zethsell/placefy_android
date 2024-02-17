@@ -48,10 +48,11 @@ class ParticularFragment : Fragment(), ISignUpFragment {
         }
 
         val parentFrag: SignUpFragment = parentFragment as SignUpFragment
+
         val address = Address(
             binding.zipcode.text.toString(),
             binding.addressLine.text.toString(),
-            binding.number.text.toString().toInt(),
+            binding.number.text.toString(),
             binding.complement.text.toString(),
             binding.suburb.text.toString(),
             binding.city.text.toString(),
@@ -108,16 +109,14 @@ class ParticularFragment : Fragment(), ISignUpFragment {
         binding.tilPassword.editText?.text.toString()
 
         fields.forEach() {
-            it.value.setOnFocusChangeListener { _, hasFocus ->
-                if (!hasFocus) {
-                    if (it.value.text.toString().isEmpty()) {
-                        it.key.error = "Este campo não pode ficar vazio!"
-                        validForm = false
-                        return@setOnFocusChangeListener;
-                    }
+            it.value.setOnFocusChangeListener { _, _ ->
+                if (it.value.text.toString().isEmpty()) {
+                    it.key.error = "Este campo não pode ficar vazio!"
+                    validForm = false
+                    return@setOnFocusChangeListener;
                 }
 
-                if (hasFocus && it.value.text.toString().isNotEmpty()) {
+                if (it.value.text.toString().isNotEmpty()) {
                     it.key.error = null
                     validForm = true
                     return@setOnFocusChangeListener;
@@ -125,86 +124,69 @@ class ParticularFragment : Fragment(), ISignUpFragment {
             }
         }
 
-        binding.password.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                if (binding.password.text.toString().isEmpty()) {
-                    binding.tilPassword.error = "Este campo não pode ficar vazio!"
-                    setImageviewMargin(binding.imgShowPass, 150)
-                    validForm = false
-                    return@setOnFocusChangeListener;
-                }
+        binding.password.setOnFocusChangeListener { _, _ ->
+            if (binding.password.text.toString().isEmpty()) {
+                binding.tilPassword.error = "Este campo não pode ficar vazio!"
+                setImageviewMargin(binding.imgShowPass, 150)
+                validForm = false
+                return@setOnFocusChangeListener;
+            }
 
-                if (binding.password.text.toString().length < 8) {
-                    binding.tilPassword.error = "A senha deve conter pelo menos 8 caracteres!"
-                    setImageviewMargin(binding.imgShowPass, 150)
-                    validForm = false
-                    return@setOnFocusChangeListener;
-                }
-
-                if (!(Regex("/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/").matches(
-                        binding.password.text.toString()
-                    ))
-                ) {
-                    binding.tilPassword.error =
-                        "Senha deve conter pelo menos 1 letra maiúscula, 1 letra minúscula, 1 número e um simbolo!"
-                    setImageviewMargin(binding.imgShowPass, 150)
-                    validForm = false
-                    return@setOnFocusChangeListener;
-                }
+            if (binding.password.text.toString().length < 8) {
+                binding.tilPassword.error = "A senha deve conter pelo menos 8 caracteres!"
+                setImageviewMargin(binding.imgShowPass, 150)
+                validForm = false
+                return@setOnFocusChangeListener;
             }
 
 
-            if (hasFocus && (binding.password.text.toString() != binding.confirmPassword.text.toString())) {
+//            var pattern =
+//                """/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/""".toRegex()
+//                    .toPattern()
+//            var matcher = pattern.matcher(binding.password.text.toString())
+//
+//            if (matcher.matches()) {
+//                binding.tilPassword.error =
+//                    "Senha deve conter pelo menos 1 letra maiúscula, 1 letra minúscula, 1 número e um simbolo!"
+//                setImageviewMargin(binding.imgShowPass, 150)
+//                validForm = false
+//                return@setOnFocusChangeListener;
+//            }
+
+
+            if ((binding.password.text.toString() != binding.confirmPassword.text.toString())) {
                 binding.tilPassword.error = "Senhas não coincidem!";
                 setImageviewMargin(binding.imgShowPass, 150)
                 validForm = false
                 return@setOnFocusChangeListener;
             }
 
-            if (hasFocus && binding.password.text.toString().isNotEmpty()) {
+            if (binding.password.text.toString().isNotEmpty()) {
+                binding.tilPassword.error = null
                 setImageviewMargin(binding.imgShowPass)
                 validForm = true
                 return@setOnFocusChangeListener;
             }
         }
 
-        binding.confirmPassword.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                if (binding.password.text.toString().isEmpty()) {
-                    binding.tilPassword.error = "Este campo não pode ficar vazio!"
-                    setImageviewMargin(binding.imgShowPass, 150)
-                    validForm = false
-                    return@setOnFocusChangeListener;
-                }
-
-                if (binding.password.text.toString().length < 8) {
-                    binding.tilPassword.error = "A senha deve conter pelo menos 8 caracteres!"
-                    setImageviewMargin(binding.imgShowPass, 150)
-                    validForm = false
-                    return@setOnFocusChangeListener;
-                }
-
-                if (!(Regex("/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/").matches(
-                        binding.password.text.toString()
-                    ))
-                ) {
-                    binding.tilPassword.error =
-                        "Senha deve conter pelo menos 1 letra maiúscula, 1 letra minúscula, 1 número e um simbolo!"
-                    setImageviewMargin(binding.imgShowPass, 150)
-                    validForm = false
-                    return@setOnFocusChangeListener;
-                }
+        binding.confirmPassword.setOnFocusChangeListener { _, _ ->
+            if (binding.password.text.toString().isEmpty()) {
+                binding.tilPassword.error = "Este campo não pode ficar vazio!"
+                setImageviewMargin(binding.imgShowPass, 150)
+                validForm = false
+                return@setOnFocusChangeListener;
             }
 
-
-            if (hasFocus && (binding.password.text.toString() != binding.confirmPassword.text.toString())) {
+            if (binding.password.text.toString() != binding.confirmPassword.text.toString()) {
                 binding.tilPassword.error = "Senhas não coincidem!";
                 setImageviewMargin(binding.imgShowPass, 150)
                 validForm = false
                 return@setOnFocusChangeListener;
             }
 
-            if (hasFocus && binding.password.text.toString().isNotEmpty()) {
+            if (binding.tilPassword.error == null
+                && binding.confirmPassword.text.toString().isNotEmpty()
+            ) {
                 setImageviewMargin(binding.imgShowPass)
                 binding.tilPassword.error = null
                 validForm = true
