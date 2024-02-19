@@ -10,6 +10,7 @@ import okhttp3.Route
 class AuthInterceptor(val context: Context) : Authenticator {
     override fun authenticate(route: Route?, response: Response): Request? {
         val auth = AuthDAO(context).show()
+
         return response.request().newBuilder()
             .addHeader("Authorization", auth.accessToken.toString())
             .build()

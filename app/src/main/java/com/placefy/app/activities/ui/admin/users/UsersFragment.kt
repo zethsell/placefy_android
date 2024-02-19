@@ -4,39 +4,73 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.placefy.app.activities.ui.admin.IndexTopBarFragment
+import com.placefy.app.adapters.UsersListAdapter
+import com.placefy.app.api.RetrofitHelper
+import com.placefy.app.api.interfaces.UserAPI
 import com.placefy.app.databinding.FragmentUsersBinding
+import com.placefy.app.enums.Register
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class UsersFragment : Fragment() {
 
-    private var _binding: FragmentUsersBinding? = null
+    private lateinit var binding: FragmentUsersBinding
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    private val base by lazy {
+        RetrofitHelper(requireActivity().baseContext).authApi
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        load()
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val galleryViewModel =
-            ViewModelProvider(this).get(UsersViewModel::class.java)
-
-        _binding = FragmentUsersBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-
-        val textView: TextView = binding.textGallery
-        galleryViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
-        return root
+        binding = FragmentUsersBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun load() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val api = base.create(UserAPI::class.java)
+            val response = api.list()
+            val users = response.body()
+
+            withContext(Dispatchers.Main) {
+
+                val bundle = bundleOf(
+                    "title" to "Todos os Usuários",
+                    "description" to "Lista de todos os usuários cadastrados.",
+                    "action" to Register.USER.ordinal
+                )
+
+                childFragmentManager.commit {
+                    replace<IndexTopBarFragment>(
+                        binding.fragUsersContainer.id, args = bundle
+                    )
+                }
+
+                if (users != null) {
+                    val adapter = UsersListAdapter()
+                    adapter.loadData(users.toMutableList())
+                    binding.rvUsers.adapter = adapter
+                    binding.rvUsers.layoutManager = LinearLayoutManager(requireContext())
+
+                }
+            }
+        }
     }
 }

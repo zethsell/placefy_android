@@ -13,10 +13,10 @@ class UserDAO(context: Context) : IUserDAO {
     override fun save(user: User): Boolean {
         val sql = "INSERT INTO ${DatabaseHelper.USER_TABLE} (" +
                 "id, name, surname, email, personDoc, registration, creci," +
-                "birthDate, type, accessAt, lastAccessAt, phone)" +
+                "birthDate, type, accessAt, lastAccessAt, phone,imgProfile,imgProfileThumb)" +
                 "VALUES ( ${user.id}, '${user.name}', '${user.surname}', '${user.email}', '${user.personDoc}'," +
                 "'${user.registration}', '${user.creci}', '${user.birthDate}', '${user.type}', '${user.accessAt}'," +
-                "'${user.lastAccessAt}', '${user.phone}') " +
+                "'${user.lastAccessAt}', '${user.phone}','${user.imgProfile}','${user.imgProfileThumb}') " +
                 "ON CONFLICT(id) DO UPDATE " +
                 "SET " +
                 "id = ${user.id} ," +
@@ -30,6 +30,8 @@ class UserDAO(context: Context) : IUserDAO {
                 "type = '${user.type}' ," +
                 "accessAt = '${user.accessAt}' ," +
                 "lastAccessAt = '${user.lastAccessAt}' ," +
+                "imgProfile = '${user.imgProfile}' ," +
+                "imgProfileThumb = '${user.imgProfileThumb}' ," +
                 "phone = '${user.phone}';"
 
         write.execSQL(sql)

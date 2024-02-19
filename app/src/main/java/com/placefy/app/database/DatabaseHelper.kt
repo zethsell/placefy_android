@@ -43,6 +43,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "placefy", nu
                 "`type` varchar NOT NULL," +
                 "`accessAt` timestamp," +
                 "`lastAccessAt` timestamp," +
+                "`imgProfile` varchar," +
+                "`imgProfileThumb` varchar," +
                 "`phone` varchar);"
         db?.execSQL(sql)
     }

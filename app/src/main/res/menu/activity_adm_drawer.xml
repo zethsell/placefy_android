@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
@@ -9,7 +10,9 @@
         android:title="@string/menu_home" />
 
 
-    <item android:title="Usuários">
+    <item
+        android:title="Usuários"
+        android:id="@+id/usersMenu">
         <menu>
             <group>
                 <item
@@ -24,6 +27,7 @@
         </menu>
     </item>
     <item
+        android:id="@+id/etcMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:title="Demais Items">
@@ -35,6 +39,24 @@
                     android:title="@string/menu_plans" />
                 <item
                     android:id="@+id/nav_properties"
+                    android:icon="@drawable/ic_home_group"
+                    android:title="@string/menu_properties" />
+            </group>
+        </menu>
+    </item>
+    <item
+        android:id="@+id/configMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Configurações">
+        <menu>
+            <group>
+                <item
+                    android:id="@+id/navMyPlans"
+                    android:icon="@drawable/ic_license_24"
+                    android:title="@string/menu_plans" />
+                <item
+                    android:id="@+id/navMyProperties"
                     android:icon="@drawable/ic_home_group"
                     android:title="@string/menu_properties" />
             </group>

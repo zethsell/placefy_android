@@ -1,60 +1,78 @@
 package com.placefy.app.activities.ui.admin.properties
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.placefy.app.R
+import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.placefy.app.activities.ui.admin.IndexTopBarFragment
+import com.placefy.app.adapters.PropertyListAdapter
+import com.placefy.app.api.RetrofitHelper
+import com.placefy.app.api.interfaces.PropertyAPI
+import com.placefy.app.databinding.FragmentPropertyBinding
+import com.placefy.app.enums.Register
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [PropertyFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class PropertyFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    private lateinit var binding: FragmentPropertyBinding
+
+    private val base by lazy {
+        RetrofitHelper(requireActivity().baseContext).authApi
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+        load()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_property, container, false)
+    ): View {
+        binding = FragmentPropertyBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment PropertyFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            PropertyFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private fun load() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val api = base.create(PropertyAPI::class.java)
+            val response = api.list()
+            val properties = response.body()
+
+            withContext(Dispatchers.Main) {
+
+                val bundle = bundleOf(
+                    "title" to "Todos os Propriedades",
+                    "description" to "Lista de todas as propriedades cadastradas.",
+                    "action" to Register.PROPERTY.ordinal
+                )
+
+                childFragmentManager.commit {
+                    replace<IndexTopBarFragment>(
+                        binding.fragPropertiesContainer.id, args = bundle
+                    )
+                }
+
+                if (properties != null) {
+                    val adapter = PropertyListAdapter()
+                    adapter.loadData(properties.toMutableList())
+                    binding.rvProperties.adapter = adapter
+                    binding.rvProperties.layoutManager = LinearLayoutManager(requireContext())
+
                 }
             }
+        }
     }
+
+
 }

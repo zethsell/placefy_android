@@ -19,6 +19,7 @@ import com.placefy.app.activities.ui.contracts.ISignUpFragment
 import com.placefy.app.api.RetrofitHelper
 import com.placefy.app.api.interfaces.SignUpAPI
 import com.placefy.app.databinding.FragmentSignUpBinding
+import com.placefy.app.enums.UserType
 import com.placefy.app.models.api.auth.signup.SignUpAgencyRequest
 import com.placefy.app.models.api.auth.signup.SignUpAgentRequest
 import com.placefy.app.models.api.auth.signup.SignUpParticularRequest
@@ -33,31 +34,28 @@ class SignUpFragment : Fragment() {
         RetrofitHelper(requireContext()).noAuthApi
     }
 
+    private lateinit var binding: FragmentSignUpBinding
     private lateinit var api: SignUpAPI
-
     private lateinit var itemSelected: Any
-
-    private val agent = "Corretor"
-    private val agency = "Imobiliária"
-    private val particular = "Particular"
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentSignUpBinding.inflate(inflater, container, false)
+        binding = FragmentSignUpBinding.inflate(inflater, container, false)
         api = base.create(SignUpAPI::class.java)
 
-        setProfileDropDown(binding)
-        setBtnCancelEvents(binding)
-        setBtnSignUpEvents(binding)
+        setProfileDropDown()
+        setBtnCancelEvents()
+        setBtnSignUpEvents()
 
         return binding.root
     }
 
-    private fun setProfileDropDown(binding: FragmentSignUpBinding) {
-        val profileItems = listOf(agent, agency, particular)
+    private fun setProfileDropDown() {
+        val profileItems =
+            listOf(UserType.AGENT.type, UserType.AGENCY.type, UserType.PARTICULAR.type)
         val autoComplete: AutoCompleteTextView = binding.autoComplete
         val adapter = ArrayAdapter(requireContext(), R.layout.list_item, profileItems)
 
@@ -67,19 +65,19 @@ class SignUpFragment : Fragment() {
                 itemSelected = adapterView.getItemAtPosition(position)
 
                 when (itemSelected) {
-                    agency -> {
+                    UserType.AGENCY.type -> {
                         childFragmentManager.commit {
                             replace<AgencyFragment>(binding.fragmentContainerView2.id)
                         }
                     }
 
-                    agent -> {
+                    UserType.AGENT.type -> {
                         childFragmentManager.commit {
                             replace<AgentFragment>(binding.fragmentContainerView2.id)
                         }
                     }
 
-                    particular -> {
+                    UserType.PARTICULAR.type -> {
                         childFragmentManager.commit {
                             replace<ParticularFragment>(binding.fragmentContainerView2.id)
                         }
@@ -90,19 +88,19 @@ class SignUpFragment : Fragment() {
             }
     }
 
-    private fun setBtnCancelEvents(binding: FragmentSignUpBinding) {
+    private fun setBtnCancelEvents() {
         binding.btnCancel.setOnClickListener {
             redirect()
         }
     }
 
-    private fun setBtnSignUpEvents(binding: FragmentSignUpBinding) {
+    private fun setBtnSignUpEvents() {
         binding.btnSignUp.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
                 val fragment: ISignUpFragment = when (itemSelected) {
-                    agency -> binding.fragmentContainerView2.getFragment<AgencyFragment>()
-                    agent -> binding.fragmentContainerView2.getFragment<AgentFragment>()
-                    particular -> binding.fragmentContainerView2.getFragment<ParticularFragment>()
+                    UserType.AGENCY.type -> binding.fragmentContainerView2.getFragment<AgencyFragment>()
+                    UserType.AGENT.type -> binding.fragmentContainerView2.getFragment<AgentFragment>()
+                    UserType.PARTICULAR.type -> binding.fragmentContainerView2.getFragment<ParticularFragment>()
                     else -> null
                 } ?: throw Error("Falha ao Cadastrar")
                 fragment.signup()

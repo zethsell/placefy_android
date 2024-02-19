@@ -8,4 +8,11 @@ interface UserAPI {
 
     @GET("v1/me")
     suspend fun me(): Response<User>
+
+    @GET("users")
+    suspend fun list(): Response<Array<User>>
+
+    @GET("users-to-approve")
+    suspend fun listToApprove(): Response<Array<User>>
+
 }

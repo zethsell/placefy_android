@@ -12,5 +12,8 @@ interface PropertyAPI {
     @GET("properties-public/{id}")
     suspend fun show(@Path("id") id: Int): Response<Property>
 
+    @GET("properties")
+    suspend fun listAdmin(): Response<Array<Property>>
+
 
 }

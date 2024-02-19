@@ -14,6 +14,7 @@ import com.placefy.app.api.RetrofitHelper
 import com.placefy.app.api.interfaces.PropertyAPI
 import com.placefy.app.database.dao.AuthDAO
 import com.placefy.app.databinding.ActivityPropertyShowBinding
+import com.placefy.app.helpers.CircleTransform
 import com.placefy.app.helpers.GoogleMapsHelper
 import com.placefy.app.helpers.PropertyHelper
 import com.placefy.app.models.data.Address
@@ -140,7 +141,7 @@ class PropertyShowActivity : AppCompatActivity() {
             val api = base.create(PropertyAPI::class.java)
             val propertyId = intent.extras?.getInt("propertyId")
             val response: Response<Property> = api.show(propertyId!!)
-            val property: Property = response.body() ?: throw Exception("Falha no login")
+            val property: Property = response.body() ?: throw Exception("Falha ao carregar")
 
 
             withContext(Dispatchers.Main) {
@@ -176,6 +177,7 @@ class PropertyShowActivity : AppCompatActivity() {
                     .load(user?.imgProfileThumb)
                     .resize(300, 300)
                     .centerInside()
+                    .transform(CircleTransform())
                     .into(binding.vendorImage)
 
                 binding.vendorName.text =

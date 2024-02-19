@@ -1,52 +1,76 @@
 package com.placefy.app.activities.ui.admin.plans
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import com.placefy.app.activities.FormActivity
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.placefy.app.activities.ui.admin.IndexTopBarFragment
+import com.placefy.app.adapters.PlansListAdapter
+import com.placefy.app.api.RetrofitHelper
+import com.placefy.app.api.interfaces.PlanAPI
 import com.placefy.app.databinding.FragmentPlansBinding
+import com.placefy.app.enums.Register
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class PlansFragment : Fragment() {
 
-    private var _binding: FragmentPlansBinding? = null
+    private lateinit var binding: FragmentPlansBinding
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    private val base by lazy {
+        RetrofitHelper(requireActivity().baseContext).authApi
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        load()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(PlansViewModel::class.java)
-
-        _binding = FragmentPlansBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-
-        val textView: TextView = binding.textGallery
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
-
-        binding.button2.setOnClickListener {
-            startActivity(Intent(context, FormActivity::class.java))
-        }
-
-        return root
-
-
+        binding = FragmentPlansBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun load() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val api = base.create(PlanAPI::class.java)
+            val response = api.listAdmin()
+            val plans = response.body()
+
+            withContext(Dispatchers.Main) {
+
+                val bundle = bundleOf(
+                    "title" to "Todos os Planos",
+                    "description" to "Lista de todos os planos cadastrados.",
+                    "action" to Register.PLAN.ordinal
+                )
+
+                childFragmentManager.commit {
+                    replace<IndexTopBarFragment>(
+                        binding.fragPlansContainer.id, args = bundle
+                    )
+                }
+
+                if (plans != null) {
+                    val adapter = PlansListAdapter()
+                    adapter.loadData(plans.toMutableList())
+                    binding.rvPlans.adapter = adapter
+                    binding.rvPlans.layoutManager = LinearLayoutManager(requireContext())
+
+                }
+            }
+        }
     }
 }
