@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <queries>
+        <package android:name="com.whatsapp" />
+    </queries>
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -15,10 +17,15 @@
         android:theme="@style/Theme.Placefy"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+
+        <activity
+            android:name=".activities.PropertyShowActivity"
+            android:parentActivityName=".activities.MainActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.FormActivity"
-            android:parentActivityName=".activities.AdminActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".activities.AdminActivity" />
         <activity
             android:name=".activities.AdminActivity"
             android:exported="false"

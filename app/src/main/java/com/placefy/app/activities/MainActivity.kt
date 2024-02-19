@@ -21,7 +21,7 @@ import retrofit2.Response
 class MainActivity : AppCompatActivity() {
 
     private val base by lazy {
-        RetrofitHelper(this).authApi
+        RetrofitHelper(this).noAuthApi
     }
 
     private val binding by lazy {

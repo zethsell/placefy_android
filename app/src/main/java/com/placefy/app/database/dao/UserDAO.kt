@@ -58,6 +58,8 @@ class UserDAO(context: Context) : IUserDAO {
             val accessAtIndex = cursor.getColumnIndex("accessAt")
             val lastAccessAtIndex = cursor.getColumnIndex("lastAccessAt")
             val phoneIndex = cursor.getColumnIndex("phone")
+            val imgProfileIndex = cursor.getColumnIndex("imgProfile")
+            val imgProfileThumbIndex = cursor.getColumnIndex("imgProfileThumb")
 
             val user = User(
                 cursor.getInt(idIndex),
@@ -72,6 +74,8 @@ class UserDAO(context: Context) : IUserDAO {
                 cursor.getString(typeIndex),
                 cursor.getString(accessAtIndex),
                 cursor.getString(lastAccessAtIndex),
+                cursor.getString(imgProfileIndex),
+                cursor.getString(imgProfileThumbIndex),
             )
 
             cursor.close()

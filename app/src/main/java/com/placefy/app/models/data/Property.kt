@@ -1,5 +1,7 @@
 package com.placefy.app.models.data
 
+import com.placefy.app.models.data.user.User
+
 data class Property(
     val id: Int?,
     val description: String?,
@@ -9,6 +11,7 @@ data class Property(
     val priceInformation: Array<PriceInformation>?,
     val gallery: Array<Image>?,
     val address: Address?,
+    val user: User?
 ) {
 
 }

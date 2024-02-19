@@ -2,10 +2,14 @@ package com.placefy.app.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.placefy.app.activities.PropertyShowActivity
 import com.placefy.app.databinding.RvPropertiesItemBinding
+import com.placefy.app.helpers.PropertyHelper
 import com.placefy.app.models.data.Image
 import com.placefy.app.models.data.Property
 
@@ -32,70 +36,24 @@ class PropertyAdapter(private val context: Context) :
             val adapter = ImageAdapter(context) {}
             adapter.loadData(list!!.toMutableList())
             binding.rvGallery.adapter = adapter
-//            binding.rvGallery.layoutManager = LinearLayoutManager(context)
 
-
-            val amenities = composeAmenities(property)
+            val helper = PropertyHelper(property)
+            val amenities = helper.composeAmenities()
             binding.propertyBeds.text = amenities["bedrooms"]
             binding.propertyBaths.text = amenities["bathrooms"]
             binding.propertyCars.text = amenities["cars"]
             binding.propertyTotalArea.text = amenities["totalArea"]
-            binding.propertyValue.text = composeTotalValue(property)
-            binding.propertyAddressLine.text = composeAddress(property)
+            binding.propertyValue.text = helper.composeTotalValue()
+            binding.propertyAddressLine.text = helper.composeAddress()
             binding.propertyTitle.text = property.title
             binding.propertyType.text = if (property.type == "sale") "Venda" else "Aluguel"
-        }
 
-        private fun composeTotalValue(property: Property): String {
-            var value: Double = 0.0
-
-            if (property.priceInformation != null) {
-                property.priceInformation.forEach { price ->
-                    if (price.addToTotal) {
-                        value += price.value
-                    }
-                }
+            binding.btnShowProperty.setOnClickListener {
+                val intent = Intent(context, PropertyShowActivity::class.java)
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.putExtra("propertyId", property.id)
+                ContextCompat.startActivity(context, intent, null)
             }
-
-            return value.toString()
-        }
-
-        private fun composeAmenities(property: Property): Map<String, String> {
-            var totalArea = 0
-            var bedrooms = 0
-            var cars = 0
-            var bathrooms = 0
-
-            if (property.amenities != null) {
-                property.amenities.forEach { amenity ->
-                    when (amenity.name) {
-                        "totalArea" -> totalArea = amenity.qtd ?: 0
-                        "bedrooms" -> bedrooms = amenity.qtd ?: 0
-                        "cars" -> cars = amenity.qtd ?: 0
-                        "bathrooms" -> bathrooms = amenity.qtd ?: 0
-                    }
-                }
-            }
-
-            return mapOf<String, String>(
-                "totalArea" to totalArea.toString(),
-                "bedrooms" to bedrooms.toString(),
-                "cars" to cars.toString(),
-                "bathrooms" to bathrooms.toString()
-            )
-        }
-
-        private fun composeAddress(property: Property): String {
-            var address = property.address?.addressLine ?: ""
-            address = address.plus(", ").plus(property.address?.number ?: "S/N")
-
-            if (property.address?.complement != "") {
-                address = address.plus(", ").plus(property.address?.complement)
-            }
-
-            address = address.plus(" - ").plus(property.address?.suburb ?: "")
-            address = address.plus(", ").plus(property.address?.city ?: "")
-            return address.plus(" - ").plus(property.address?.state ?: "")
         }
     }
 

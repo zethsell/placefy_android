@@ -13,4 +13,6 @@ data class User(
     val type: String?,
     val accessAt: String?,
     val lastAccessAt: String?,
+    val imgProfile: String?,
+    val imgProfileThumb: String?,
 )
